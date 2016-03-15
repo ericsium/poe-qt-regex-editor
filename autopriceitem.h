@@ -5,6 +5,7 @@
 #include <QString>
 
 class QDataStream;
+
 class AutoPriceItem
 {
 public:

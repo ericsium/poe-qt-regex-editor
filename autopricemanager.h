@@ -13,13 +13,13 @@ class AutoPriceManager
 public:
     AutoPriceManager(QString file, QStandardItemModel *model);
 
-    void Load();
-    void Save();
+    bool Load();
+    bool Save();
 
 private:
     QList<AutoPriceItem> AutoPriceList;
     QStandardItemModel *Model;
-    QString File;
+    QString Filename;
 
     // To support serialization of the class
     friend QDataStream &operator<<(QDataStream &out, const AutoPriceManager &s);
