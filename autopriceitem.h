@@ -8,7 +8,7 @@ class QDataStream;
 class AutoPriceItem
 {
 public:
-    AutoPriceItem();
+    AutoPriceItem() = default;
 
 private:
     QRegularExpression Expression;
@@ -21,6 +21,8 @@ private:
     friend QDataStream &operator<<(QDataStream &out, const AutoPriceItem &s);
     friend QDataStream &operator>>(QDataStream &in, AutoPriceItem &s);
 };
+
+Q_DECLARE_METATYPE(AutoPriceItem)
 
 QDataStream &operator<<(QDataStream &out, const AutoPriceItem &s);
 QDataStream &operator>>(QDataStream &in, AutoPriceItem &s);

@@ -4,10 +4,6 @@
 #include "autopriceitem.h"
 #include "serialize.h"
 
-AutoPriceItem::AutoPriceItem()
-{
-}
-
 QDataStream &operator<<(QDataStream &out, const AutoPriceItem &s)
  {
     QVariantMap map;
