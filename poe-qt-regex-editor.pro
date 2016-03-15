@@ -14,10 +14,14 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    autopricemanagerdialog.cpp
+    autopricemanagerdialog.cpp \
+    autopricemanager.cpp \
+    autopriceitem.cpp
 
 HEADERS  += mainwindow.h \
-    autopricemanagerdialog.h
+    autopricemanagerdialog.h \
+    autopricemanager.h \
+    autopriceitem.h
 
 FORMS    += mainwindow.ui \
     autopricemanagerdialog.ui
