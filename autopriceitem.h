@@ -4,6 +4,7 @@
 #include <QRegularExpression>
 #include <QString>
 
+class QDataStream;
 class AutoPriceItem
 {
 public:
@@ -12,9 +13,16 @@ public:
 private:
     QRegularExpression Expression;
     QString CurrencyName;
-    float Value;
-    bool HasValue;
-    bool Enabled;
+    float Value{0.0};
+    bool HasValue{false};
+    bool Enabled{false};
+
+    // To support serialization of the class
+    friend QDataStream &operator<<(QDataStream &out, const AutoPriceItem &s);
+    friend QDataStream &operator>>(QDataStream &in, AutoPriceItem &s);
 };
+
+QDataStream &operator<<(QDataStream &out, const AutoPriceItem &s);
+QDataStream &operator>>(QDataStream &in, AutoPriceItem &s);
 
 #endif // AUTOPRICEITEM_H

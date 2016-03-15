@@ -21,7 +21,10 @@ SOURCES += main.cpp\
 HEADERS  += mainwindow.h \
     autopricemanagerdialog.h \
     autopricemanager.h \
-    autopriceitem.h
+    autopriceitem.h \
+    serialize.h
 
 FORMS    += mainwindow.ui \
     autopricemanagerdialog.ui
+
+CONFIG += c++11

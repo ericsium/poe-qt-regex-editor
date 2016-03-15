@@ -13,13 +13,13 @@ class AutoPriceManager
 public:
     AutoPriceManager(QString file, QStandardItemModel *model);
 
-    Load() {};
-    Save() {};
+    void Load();
+    void Save();
 
 private:
-
     QVector<AutoPriceItem> AutoPriceList;
     QStandardItemModel *Model;
+    QString File;
 };
 
 #endif // AUTOPRICEMANAGER_H

@@ -3,7 +3,9 @@
 #include "QStandardItemModel"
 
 AutoPriceManager::AutoPriceManager(QString file, QStandardItemModel *model)
-    : Model(model)
+    : Model(model),
+      File(file)
 {
-
 }
+
+
