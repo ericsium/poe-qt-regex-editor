@@ -4,6 +4,7 @@
 #include <QMainWindow>
 
 class AutoPriceManagerDialog;
+class AutoPriceManager;
 
 namespace Ui {
 class MainWindow;
@@ -20,9 +21,11 @@ public:
 private slots:
     void on_actionRegexp_Editor_triggered();
 
+
 private:
     Ui::MainWindow *ui;
-    AutoPriceManagerDialog *APM_Dialog;
+    AutoPriceManagerDialog *apm_dialog_;
+    AutoPriceManager *apm_manager_;
 
 };
 

@@ -17,9 +17,9 @@ public:
     bool Save();
 
 private:
-    QList<AutoPriceItem> AutoPriceList;
-    QStandardItemModel *Model;
-    QString Filename;
+    QList<AutoPriceItem> auto_price_list_;
+    QStandardItemModel *model_;
+    QString filename_;
 
     // To support serialization of the class
     friend QDataStream &operator<<(QDataStream &out, const AutoPriceManager &s);

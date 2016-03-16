@@ -12,11 +12,11 @@ public:
     AutoPriceItem() = default;
 
 private:
-    QRegularExpression Expression;
-    QString CurrencyName;
-    float Value{0.0};
-    bool HasValue{false};
-    bool Enabled{false};
+    QRegularExpression expression_;
+    QString currency_name_;
+    float value_{0.0};
+    bool has_value_{false};
+    bool enabled_{false};
 
     // To support serialization of the class
     friend QDataStream &operator<<(QDataStream &out, const AutoPriceItem &s);

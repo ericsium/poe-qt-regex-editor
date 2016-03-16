@@ -3,6 +3,8 @@
 
 #include <QDialog>
 
+class QStandardItemModel;
+
 namespace Ui {
 class AutoPriceManagerDialog;
 }
@@ -15,8 +17,11 @@ public:
     explicit AutoPriceManagerDialog(QWidget *parent = 0);
     ~AutoPriceManagerDialog();
 
+    QStandardItemModel *GetModel() { return model_; };
+
 private:
     Ui::AutoPriceManagerDialog *ui;
+    QStandardItemModel *model_;
 };
 
 #endif // AUTOPRICEMANAGERDIALOG_H
