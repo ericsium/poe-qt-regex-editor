@@ -20,7 +20,6 @@ QDataStream &operator<<(QDataStream &out, const AutoPriceItem &s)
 QDataStream &operator>>(QDataStream &in, AutoPriceItem &s)
  {
     QVariantMap map;
-
     in >> map;
     map["expression"] >> s.expression_;
     map["currency_name"] >> s.currency_name_;

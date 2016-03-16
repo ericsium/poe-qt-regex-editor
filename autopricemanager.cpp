@@ -81,7 +81,13 @@ void AutoPriceManager::LoadDefaultData()
 //
 void AutoPriceManager::ReadFromModel()
 {
-
+    qDebug() << "ReadFromModel()";
+    auto_price_list_.clear();
+    for (QStandardItem *item: model_->takeColumn(0)) {
+        AutoPriceItem tmp;
+        tmp.expression_.setPattern(item->text());
+        auto_price_list_.append(std::move(tmp));
+    }
 }
 
 void AutoPriceManager::WriteToModel()
@@ -94,8 +100,7 @@ void AutoPriceManager::WriteToModel()
     int index = 0;
     for (AutoPriceItem const &ap: auto_price_list_) {
         auto item = new QStandardItem;
-        // item->setText(ap.expression_.pattern());
-        item->setText("hello");
+        item->setText(ap.expression_.pattern());
         qDebug() << ap.expression_.pattern();
         model_->setItem(index++,0,item);
     }
