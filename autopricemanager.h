@@ -16,10 +16,15 @@ public:
     bool Load();
     bool Save();
 
+    void LoadDefaultData();
+
 private:
     QList<AutoPriceItem> auto_price_list_;
     QStandardItemModel *model_;
     QString filename_;
+
+    void ReadFromModel();
+    void WriteToModel();
 
     // To support serialization of the class
     friend QDataStream &operator<<(QDataStream &out, const AutoPriceManager &s);
