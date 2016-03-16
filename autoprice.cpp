@@ -1,10 +1,10 @@
 #include <QVariantMap>
 #include <QDataStream>
 
-#include "autopriceitem.h"
+#include "autoprice.h"
 #include "serialize.h"
 
-QDataStream &operator<<(QDataStream &out, const AutoPriceItem &s)
+QDataStream &operator<<(QDataStream &out, const AutoPrice &s)
  {
     QVariantMap map;
     map["expression"] << s.expression_;
@@ -17,7 +17,7 @@ QDataStream &operator<<(QDataStream &out, const AutoPriceItem &s)
     return out;
  }
 
-QDataStream &operator>>(QDataStream &in, AutoPriceItem &s)
+QDataStream &operator>>(QDataStream &in, AutoPrice &s)
  {
     QVariantMap map;
     in >> map;

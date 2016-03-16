@@ -12,7 +12,7 @@ AutoPriceManager::AutoPriceManager(QString file, QStandardItemModel *model)
     : model_(model),
       filename_(file)
 {
-    qRegisterMetaTypeStreamOperators<QList<AutoPriceItem>>("QList<AutoPriceItem>");
+    qRegisterMetaTypeStreamOperators<QList<AutoPrice>>("QList<AutoPrice>");
     Load();
 }
 
@@ -38,7 +38,7 @@ bool AutoPriceManager::Load()
         }
         file.close();
     } else {
-         qDebug() << "Could not open '" << filename_ << "'' for reading.";
+        qDebug() << "Could not open '" << filename_ << "' for reading. File error: " << file.errorString();
     }
 
     if (auto_price_list_.empty())
@@ -67,7 +67,7 @@ bool AutoPriceManager::Save()
         file.close();
         result = false;
     } else {
-        qDebug() << "Could not open '" << filename_ << "' for writing.";
+        qDebug() << "Could not open '" << filename_ << "' for writing. File error: " << file.errorString();
     }
 
     return result;
@@ -76,18 +76,17 @@ bool AutoPriceManager::Save()
 void AutoPriceManager::LoadDefaultData()
 {
     qDebug() << "LoadDefaultData()";
-    AutoPriceItem item;
+    AutoPrice item;
     item.expression_.setPattern(".*");
     auto_price_list_.append(std::move(item));
 }
 
-//
 void AutoPriceManager::ReadFromModel()
 {
     qDebug() << "ReadFromModel()";
     auto_price_list_.clear();
     for (QStandardItem *item: model_->takeColumn(0)) {
-        AutoPriceItem tmp;
+        AutoPrice tmp;
         tmp.expression_.setPattern(item->text());
         auto_price_list_.append(std::move(tmp));
     }
@@ -101,7 +100,7 @@ void AutoPriceManager::WriteToModel()
     model_->setColumnCount(1);
 
     int index = 0;
-    for (AutoPriceItem const &ap: auto_price_list_) {
+    for (AutoPrice const &ap: auto_price_list_) {
         auto item = new QStandardItem;
         item->setText(ap.expression_.pattern());
         qDebug() << ap.expression_.pattern();

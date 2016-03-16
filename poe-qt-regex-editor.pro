@@ -16,13 +16,13 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     autopricemanagerdialog.cpp \
     autopricemanager.cpp \
-    autopriceitem.cpp
+    autoprice.cpp
 
 HEADERS  += mainwindow.h \
     autopricemanagerdialog.h \
     autopricemanager.h \
-    autopriceitem.h \
-    serialize.h
+    serialize.h \
+    autoprice.h
 
 FORMS    += mainwindow.ui \
     autopricemanagerdialog.ui

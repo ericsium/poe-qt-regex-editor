@@ -4,7 +4,7 @@
 #include <QVector>
 #include <QString>
 
-#include "autopriceitem.h"
+#include "autoprice.h"
 
 class QStandardItemModel;
 
@@ -19,7 +19,7 @@ public:
     void LoadDefaultData();
 
 private:
-    QList<AutoPriceItem> auto_price_list_;
+    QList<AutoPrice> auto_price_list_;
     QStandardItemModel *model_;
     QString filename_;
 
@@ -32,5 +32,5 @@ private:
 };
 
 QDataStream &operator<<(QDataStream &out, const AutoPriceManager &s);
-QDataStream &operator>>(QDataStream &in, AutoPriceItem &s);
+QDataStream &operator>>(QDataStream &in, AutoPrice &s);
 #endif // AUTOPRICEMANAGER_H
