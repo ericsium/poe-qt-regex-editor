@@ -6,68 +6,71 @@
 #include "serialize.h"
 
 const int g_magic_header_ = 0xF517DA8D;
+const auto g_data_stream_ = QDataStream::Qt_4_7;
 
 AutoPriceManager::AutoPriceManager(QString file, QStandardItemModel *model)
     : model_(model),
       filename_(file)
 {
     qRegisterMetaTypeStreamOperators<QList<AutoPriceItem>>("QList<AutoPriceItem>");
+    Load();
 }
 
 bool AutoPriceManager::Load()
 {
+    bool result = false;
+
     qDebug() << "Load()";
     QFile file(filename_);
 
-    if(!file.open(QIODevice::ReadOnly))
+    if(file.open(QIODevice::ReadOnly))
     {
-        qDebug() << "Could not open '" << filename_ << "'' for reading.";
-        LoadDefaultData();
-        return false;
-    }
+        QDataStream in(&file);
+        in.setVersion(g_data_stream_);
 
-    QDataStream in(&file);
-    in.setVersion(QDataStream::Qt_4_7);
-
-    int magicHeader;
-    in >> magicHeader;
-    if (magicHeader == g_magic_header_) {
-        in >> *this;
+        int magicHeader;
+        in >> magicHeader;
+        if (magicHeader == g_magic_header_) {
+            in >> *this;
+            result = true;
+        } else {
+            qDebug() << "Magic header mistmach.  File '" << filename_ << "' does not look like a valid input file.";
+        }
+        file.close();
     } else {
-        qDebug() << "Magic header mistmach.  File '" << filename_ << "' does not look like a valid input file.";
-        LoadDefaultData();
-        return false;
+         qDebug() << "Could not open '" << filename_ << "'' for reading.";
     }
-    file.close();
 
     if (auto_price_list_.empty())
         LoadDefaultData();
 
     WriteToModel();
 
-    return true;
+    return result;
 }
 
 bool AutoPriceManager::Save()
 {
+    bool result = false;
+
     qDebug() << "Save()";
     QFile file(filename_);
 
-    if(!file.open(QIODevice::WriteOnly))
-    {
-        qDebug() << "Could not open '" << filename_ << "' for writing.";
-        return false;
-    }
-
     ReadFromModel();
 
-    QDataStream out(&file);
-    out.setVersion(QDataStream::Qt_4_7);
+    if(file.open(QIODevice::WriteOnly))
+    {
+        QDataStream out(&file);
+        out.setVersion(g_data_stream_);
 
-    out << g_magic_header_ << *this;
-    file.close();
+        out << g_magic_header_ << *this;
+        file.close();
+        result = false;
+    } else {
+        qDebug() << "Could not open '" << filename_ << "' for writing.";
+    }
 
-    return true;
+    return result;
 }
 
 void AutoPriceManager::LoadDefaultData()
