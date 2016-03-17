@@ -16,11 +16,14 @@
   <widget class="QTreeView" name="treeView">
    <property name="geometry">
     <rect>
-     <x>60</x>
-     <y>110</y>
+     <x>20</x>
+     <y>100</y>
      <width>256</width>
      <height>192</height>
     </rect>
+   </property>
+   <property name="editTriggers">
+    <set>QAbstractItemView::NoEditTriggers</set>
    </property>
   </widget>
   <widget class="QToolButton" name="toolButton_add">

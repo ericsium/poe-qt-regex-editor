@@ -2,16 +2,17 @@
 #include "ui_mainwindow.h"
 #include "autopricemanagerdialog.h"
 #include "autopricemanager.h"
-#include "autopricedialog.h"
+#include "autopriceitemmodel.h"
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    apm_dialog_(new AutoPriceManagerDialog(this)),
-    ap_dialog_(new AutoPriceDialog(apm_dialog_))
+    model_(new AutoPriceItemModel()),
+    apm_dialog_(new AutoPriceManagerDialog(this, model_))
 {
     ui->setupUi(this);
-    apm_manager_ = new AutoPriceManager("testfile", apm_dialog_->GetModel());
+    apm_manager_ = new AutoPriceManager("testfile", model_);
 
     connect(apm_dialog_, &QDialog::accepted, [&]() {
         apm_manager_->Save();

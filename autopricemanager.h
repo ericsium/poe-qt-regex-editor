@@ -6,12 +6,12 @@
 
 #include "autoprice.h"
 
-class QStandardItemModel;
+class AutoPriceItemModel;
 
 class AutoPriceManager
 {
 public:
-    AutoPriceManager(QString file, QStandardItemModel *model);
+    AutoPriceManager(QString file, AutoPriceItemModel *model);
 
     bool Load();
     bool Save();
@@ -20,7 +20,7 @@ public:
 
 private:
     QList<AutoPrice> auto_price_list_;
-    QStandardItemModel *model_;
+    AutoPriceItemModel *model_;
     QString filename_;
 
     void ReadFromModel();

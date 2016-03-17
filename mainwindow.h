@@ -6,6 +6,7 @@
 class AutoPriceManagerDialog;
 class AutoPriceManager;
 class AutoPriceDialog;
+class AutoPriceItemModel;
 
 namespace Ui {
 class MainWindow;
@@ -25,8 +26,8 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    AutoPriceItemModel *model_;
     AutoPriceManagerDialog *apm_dialog_;
-    AutoPriceDialog *ap_dialog_;
     AutoPriceManager *apm_manager_;
 
 };

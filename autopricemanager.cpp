@@ -4,11 +4,12 @@
 
 #include "autopricemanager.h"
 #include "serialize.h"
+#include "autopriceitemmodel.h"
 
 const int g_magic_header_ = 0xF517DA8D;
 const auto g_data_stream_ = QDataStream::Qt_4_7;
 
-AutoPriceManager::AutoPriceManager(QString file, QStandardItemModel *model)
+AutoPriceManager::AutoPriceManager(QString file, AutoPriceItemModel *model)
     : model_(model),
       filename_(file)
 {
