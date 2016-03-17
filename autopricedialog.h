@@ -2,6 +2,7 @@
 #define AUTOPRICEDIALOG_H
 
 #include <QDialog>
+#include <QPalette>
 
 class AutoPriceItemModel;
 class QDataWidgetMapper;
@@ -24,11 +25,14 @@ private:
     Ui::AutoPriceDialog *ui;
     AutoPriceItemModel *model_;
     QDataWidgetMapper *mapper_;
+    QPalette error_palette_;
+    QPalette normal_palette_;
 
 public Q_SLOTS:
     void OnIndexChanged(const QModelIndex &index);
 private slots:
     void on_AutoPriceDialog_accepted();
+    void on_lineEdit_textChanged(const QString &arg1);
 };
 
 #endif // AUTOPRICEDIALOG_H

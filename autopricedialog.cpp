@@ -2,6 +2,7 @@
 #include "ui_autopricedialog.h"
 #include "autopriceitemmodel.h"
 #include <QDataWidgetMapper>
+#include <QDebug>
 
 AutoPriceDialog::AutoPriceDialog(QWidget *parent, AutoPriceItemModel *model) :
     QDialog(parent),
@@ -15,6 +16,9 @@ AutoPriceDialog::AutoPriceDialog(QWidget *parent, AutoPriceItemModel *model) :
     mapper_->setSubmitPolicy(QDataWidgetMapper::ManualSubmit);
 
     ui->comboBox->addItems({"Orb of Alchemy","Chaos Orb", "Exalted Orb"});
+
+   error_palette_.setColor(QPalette::Text,Qt::red);
+   normal_palette_.setColor(QPalette::Text,Qt::black);
 }
 
 AutoPriceDialog::~AutoPriceDialog()
@@ -31,4 +35,19 @@ void AutoPriceDialog::OnIndexChanged(const QModelIndex &index)
 void AutoPriceDialog::on_AutoPriceDialog_accepted()
 {
     mapper_->submit();
+}
+
+void AutoPriceDialog::on_lineEdit_textChanged(const QString &arg1)
+{
+    // Basically constantly evaluate regexp for validity
+    QRegularExpression exp(arg1);
+    if (!exp.isValid()) {
+        ui->lineEdit->setPalette(error_palette_);
+        ui->doubleSpinBox->setEnabled(false);
+        ui->buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
+    } else {
+        ui->lineEdit->setPalette(normal_palette_);
+        ui->doubleSpinBox->setEnabled(exp.captureCount() == 0);
+        ui->buttonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
+    }
 }
