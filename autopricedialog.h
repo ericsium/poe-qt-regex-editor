@@ -33,6 +33,8 @@ public Q_SLOTS:
 private slots:
     void on_AutoPriceDialog_accepted();
     void on_lineEdit_textChanged(const QString &arg1);
+    void on_toolButton_match_remove_clicked();
+    void on_toolButton_match_add_clicked();
 };
 
 #endif // AUTOPRICEDIALOG_H

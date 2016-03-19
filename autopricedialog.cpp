@@ -3,6 +3,7 @@
 #include "autopriceitemmodel.h"
 #include <QDataWidgetMapper>
 #include <QDebug>
+#include <QPushButton>
 
 AutoPriceDialog::AutoPriceDialog(QWidget *parent, AutoPriceItemModel *model) :
     QDialog(parent),
@@ -50,4 +51,17 @@ void AutoPriceDialog::on_lineEdit_textChanged(const QString &arg1)
         ui->doubleSpinBox->setEnabled(exp.captureCount() == 0);
         ui->buttonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
     }
+}
+
+void AutoPriceDialog::on_toolButton_match_remove_clicked()
+{
+    delete ui->listWidget_match->currentItem();
+}
+
+void AutoPriceDialog::on_toolButton_match_add_clicked()
+{
+    auto const &widget = ui->listWidget_match;
+    auto item = new QListWidgetItem;
+    item->setText("match_string");
+    widget->addItem(item);
 }
