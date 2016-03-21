@@ -12,6 +12,8 @@ QDataStream &operator<<(QDataStream &out, const AutoPrice &s)
     map["value"] << s.value_;
     map["has_value"] << s.has_value_;
     map["enabled"] << s.enabled_;
+    map["matches"] << s.matches;
+    map["mismatches"] << s.mismatches;
     out << map;
 
     return out;
@@ -26,6 +28,7 @@ QDataStream &operator>>(QDataStream &in, AutoPrice &s)
     map["value"] >> s.value_;
     map["has_value"] >> s.has_value_;
     map["enabled"] >> s.enabled_;
-
+    map["matches"] >> s.matches;
+    map["mismatches"] >> s.mismatches;
     return in;
  }

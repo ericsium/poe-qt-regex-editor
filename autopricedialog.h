@@ -27,6 +27,7 @@ private:
     QDataWidgetMapper *mapper_;
     QPalette error_palette_;
     QPalette normal_palette_;
+    QModelIndex const *current_index_;
 
 public Q_SLOTS:
     void OnIndexChanged(const QModelIndex &index);
@@ -35,6 +36,8 @@ private slots:
     void on_lineEdit_textChanged(const QString &arg1);
     void on_toolButton_match_remove_clicked();
     void on_toolButton_match_add_clicked();
+    void on_toolButton_mismatch_remove_clicked();
+    void on_toolButton_mismatch_add_clicked();
 };
 
 #endif // AUTOPRICEDIALOG_H

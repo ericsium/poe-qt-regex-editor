@@ -1,6 +1,7 @@
 #include "autopricedialog.h"
 #include "ui_autopricedialog.h"
 #include "autopriceitemmodel.h"
+#include "autopriceutils.h"
 #include <QDataWidgetMapper>
 #include <QDebug>
 #include <QPushButton>
@@ -18,8 +19,8 @@ AutoPriceDialog::AutoPriceDialog(QWidget *parent, AutoPriceItemModel *model) :
 
     ui->comboBox->addItems({"Orb of Alchemy","Chaos Orb", "Exalted Orb"});
 
-   error_palette_.setColor(QPalette::Text,Qt::red);
-   normal_palette_.setColor(QPalette::Text,Qt::black);
+    error_palette_.setColor(QPalette::Text,Qt::red);
+    normal_palette_.setColor(QPalette::Text,Qt::black);
 }
 
 AutoPriceDialog::~AutoPriceDialog()
@@ -29,12 +30,25 @@ AutoPriceDialog::~AutoPriceDialog()
 
 void AutoPriceDialog::OnIndexChanged(const QModelIndex &index)
 {
+    ui->listWidget_match->clear();
+    ui->listWidget_match->addItems(model_->item(index.row(), 1)->data(Qt::UserRole).toStringList());
+
+    ui->listWidget_mismatch->clear();
+    ui->listWidget_mismatch->addItems(model_->item(index.row(), 2)->data(Qt::UserRole).toStringList());
+
     mapper_->setCurrentModelIndex(index);
+    current_row_ = index.row();
     exec();
 }
 
 void AutoPriceDialog::on_AutoPriceDialog_accepted()
 {
+    QModelIndex a;
+    a.
+    model_->itemFromIndex(QModelIndex())
+    model_->itemFromIndex()->setData(Utils::items(ui->listWidget_match), Qt::UserRole);
+    model_->itemFromIndex(*current_index_)->setData(Utils::items(ui->listWidget_match), Qt::UserRole);
+
     mapper_->submit();
 }
 
@@ -61,6 +75,19 @@ void AutoPriceDialog::on_toolButton_match_remove_clicked()
 void AutoPriceDialog::on_toolButton_match_add_clicked()
 {
     auto const &widget = ui->listWidget_match;
+    auto item = new QListWidgetItem;
+    item->setText("match_string");
+    widget->addItem(item);
+}
+
+void AutoPriceDialog::on_toolButton_mismatch_remove_clicked()
+{
+    delete ui->listWidget_mismatch->currentItem();
+}
+
+void AutoPriceDialog::on_toolButton_mismatch_add_clicked()
+{
+    auto const &widget = ui->listWidget_mismatch;
     auto item = new QListWidgetItem;
     item->setText("match_string");
     widget->addItem(item);

@@ -3,6 +3,7 @@
 
 #include <QRegularExpression>
 #include <QString>
+#include <QStringList>
 
 class QDataStream;
 
@@ -14,6 +15,8 @@ public:
     float value_{0.0};
     bool has_value_{false};
     bool enabled_{false};
+    QStringList matches;
+    QStringList mismatches;
 
     private:
     // To support serialization of the class

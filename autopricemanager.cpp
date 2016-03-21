@@ -13,7 +13,7 @@ AutoPriceManager::AutoPriceManager(QString file, AutoPriceItemModel *model)
     : model_(model),
       filename_(file)
 {
-    qRegisterMetaTypeStreamOperators<QList<AutoPrice>>("QList<AutoPrice>");
+    qRegisterMetaTypeStreamOperators< QList<AutoPrice> >("QList<AutoPrice>");
     Load();
 }
 
@@ -86,9 +86,17 @@ void AutoPriceManager::ReadFromModel()
 {
     qDebug() << "ReadFromModel()";
     auto_price_list_.clear();
-    for (QStandardItem *item: model_->takeColumn(0)) {
+
+    for (auto row = 0; row < model_->rowCount(); row++) {
         AutoPrice tmp;
-        tmp.expression_.setPattern(item->text());
+        for (auto column = 0; column < model_->columnCount(); column++) {
+            QStandardItem *item = model_->item(row, column);
+            switch(column) {
+            case 0: tmp.expression_.setPattern(item->text()); break;
+            case 1: tmp.matches = item->data(Qt::UserRole).toStringList(); break;
+            case 2: tmp.mismatches = item->data(Qt::UserRole).toStringList(); break;
+            }
+        }
         auto_price_list_.append(std::move(tmp));
     }
 }
@@ -98,24 +106,30 @@ void AutoPriceManager::WriteToModel()
     qDebug() << "WriteToModel()";
     model_->clear();
     model_->setRowCount(auto_price_list_.size());
-    model_->setColumnCount(1);
+    model_->setColumnCount(3);
 
     int index = 0;
     for (AutoPrice const &ap: auto_price_list_) {
         auto item = new QStandardItem;
         item->setText(ap.expression_.pattern());
-        qDebug() << ap.expression_.pattern();
-        model_->setItem(index++,0,item);
+        model_->setItem(index,0,item);
+
+        item = new QStandardItem;
+        item->setData(ap.matches, Qt::UserRole);
+        model_->setItem(index,1,item);
+
+        item = new QStandardItem;
+        item->setData(ap.mismatches, Qt::UserRole);
+        model_->setItem(index,2,item);
+        index++;
     }
 }
-
 
 QDataStream &operator<<(QDataStream &out, const AutoPriceManager &s)
 {
     QVariantMap map;
     map["auto_price_list"] << s.auto_price_list_;
     out << map;
-
     return out;
 }
 
@@ -124,7 +138,6 @@ QDataStream &operator>>(QDataStream &in, AutoPriceManager &s)
     QVariantMap map;
     in >> map;
     map["auto_price_list"] >> s.auto_price_list_;
-
     return in;
 }
 
