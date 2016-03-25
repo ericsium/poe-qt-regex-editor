@@ -17,6 +17,9 @@ AutoPriceDialog::AutoPriceDialog(QWidget *parent, AutoPriceItemModel *model) :
     mapper_->addMapping(ui->lineEdit, 0);
     mapper_->setSubmitPolicy(QDataWidgetMapper::ManualSubmit);
 
+    ui->listWidget_match->setProperty("match", true);
+    ui->listWidget_mismatch->setProperty("match", false);
+
     ui->comboBox->addItems({"Orb of Alchemy","Chaos Orb", "Exalted Orb"});
 
     error_palette_.setColor(QPalette::Text,Qt::red);
@@ -28,13 +31,56 @@ AutoPriceDialog::~AutoPriceDialog()
     delete ui;
 }
 
+void AutoPriceDialog::SetActiveExpression(QString str)
+{
+    active_expression_.setPattern(str);
+
+}
+
+void AutoPriceDialog::AddStringToListWidget(QString str, QListWidget *widget)
+{
+    auto item = new QListWidgetItem;
+    item->setText(str);
+    item->setFlags(item->flags() | Qt::ItemIsEditable);
+    widget->addItem(item);
+    UpdateListWidgetItemErrorState(item);
+}
+
+void AutoPriceDialog::LoadListWidgetFromRowColumn(QListWidget *widget, int row, int column)
+{
+    widget->clear();
+    for (auto const &str: model_->item(row, column)->data(Qt::UserRole).toStringList()) {
+        AddStringToListWidget(str, widget);
+    }
+}
+
+void AutoPriceDialog::UpdateListWidgetErrorState(QListWidget *widget)
+{
+    for(int i = 0; i < widget->count(); ++i) {
+        UpdateListWidgetItemErrorState(widget->item(i));
+    }
+}
+
+void AutoPriceDialog::UpdateListWidgetItemErrorState(QListWidgetItem *item)
+{
+    QRegularExpression exp(ui->lineEdit->text());
+    if (!exp.isValid()) return;
+
+    QRegularExpressionMatch match = exp.match(item->text());
+    // See if item matches
+    if (item->listWidget()->property("match").toBool()) {
+        item->setForeground(match.hasMatch() ? Qt::black : Qt::red);
+            qDebug() << "Here I am match:" << ui->lineEdit->text() << " " << match.isValid() << " " << item->text();
+    } else {
+        item->setForeground(match.hasMatch() ? Qt::red : Qt::black);
+            qDebug() << "Here I am mismatch:" << ui->lineEdit->text() << " "<< match.isValid() << " " << item->text();
+    }
+}
+
 void AutoPriceDialog::OnIndexChanged(const QModelIndex &index)
 {
-    ui->listWidget_match->clear();
-    ui->listWidget_match->addItems(model_->item(index.row(), 1)->data(Qt::UserRole).toStringList());
-
-    ui->listWidget_mismatch->clear();
-    ui->listWidget_mismatch->addItems(model_->item(index.row(), 2)->data(Qt::UserRole).toStringList());
+    LoadListWidgetFromRowColumn(ui->listWidget_match, index.row(), 1);
+    LoadListWidgetFromRowColumn(ui->listWidget_mismatch, index.row(), 2);
 
     mapper_->setCurrentModelIndex(index);
     current_row_ = index.row();
@@ -43,17 +89,15 @@ void AutoPriceDialog::OnIndexChanged(const QModelIndex &index)
 
 void AutoPriceDialog::on_AutoPriceDialog_accepted()
 {
-    QModelIndex a;
-    a.
-    model_->itemFromIndex(QModelIndex())
-    model_->itemFromIndex()->setData(Utils::items(ui->listWidget_match), Qt::UserRole);
-    model_->itemFromIndex(*current_index_)->setData(Utils::items(ui->listWidget_match), Qt::UserRole);
-
+    model_->itemFromIndex(model_->index(current_row_,1))->setData(Utils::items(ui->listWidget_match), Qt::UserRole);
+    model_->itemFromIndex(model_->index(current_row_,2))->setData(Utils::items(ui->listWidget_mismatch), Qt::UserRole);
     mapper_->submit();
 }
 
 void AutoPriceDialog::on_lineEdit_textChanged(const QString &arg1)
 {
+    SetActiveExpression(arg1);
+
     // Basically constantly evaluate regexp for validity
     QRegularExpression exp(arg1);
     if (!exp.isValid()) {
@@ -65,6 +109,8 @@ void AutoPriceDialog::on_lineEdit_textChanged(const QString &arg1)
         ui->doubleSpinBox->setEnabled(exp.captureCount() == 0);
         ui->buttonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
     }
+    UpdateListWidgetErrorState(ui->listWidget_match);
+    UpdateListWidgetErrorState(ui->listWidget_mismatch);
 }
 
 void AutoPriceDialog::on_toolButton_match_remove_clicked()
@@ -74,10 +120,7 @@ void AutoPriceDialog::on_toolButton_match_remove_clicked()
 
 void AutoPriceDialog::on_toolButton_match_add_clicked()
 {
-    auto const &widget = ui->listWidget_match;
-    auto item = new QListWidgetItem;
-    item->setText("match_string");
-    widget->addItem(item);
+    AddStringToListWidget("match_string", ui->listWidget_match);
 }
 
 void AutoPriceDialog::on_toolButton_mismatch_remove_clicked()
@@ -87,8 +130,10 @@ void AutoPriceDialog::on_toolButton_mismatch_remove_clicked()
 
 void AutoPriceDialog::on_toolButton_mismatch_add_clicked()
 {
-    auto const &widget = ui->listWidget_mismatch;
-    auto item = new QListWidgetItem;
-    item->setText("match_string");
-    widget->addItem(item);
+    AddStringToListWidget("mismatch_string", ui->listWidget_mismatch);
+}
+
+void AutoPriceDialog::on_listWidget_match_itemChanged(QListWidgetItem *item)
+{
+    UpdateListWidgetItemErrorState(item);
 }
