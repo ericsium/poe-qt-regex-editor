@@ -38,6 +38,7 @@ private:
     void LoadListWidgetFromRowColumn(QListWidget *widget, int row, int column);
     void UpdateListWidgetErrorState(QListWidget *widget);
     void UpdateListWidgetItemErrorState(QListWidgetItem *item);
+    QStringList ListWidgetToStringList(const QListWidget *widget);
 
     int ErrorCount() const;
     int ListWidgetErrorCount(QListWidget *widget) const;

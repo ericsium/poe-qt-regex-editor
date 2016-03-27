@@ -1,7 +1,6 @@
 #include "autopricedialog.h"
 #include "ui_autopricedialog.h"
 #include "autopriceitemmodel.h"
-#include "autopriceutils.h"
 #include <QDataWidgetMapper>
 #include <QDebug>
 #include <QPushButton>
@@ -75,16 +74,21 @@ void AutoPriceDialog::UpdateListWidgetItemErrorState(QListWidgetItem *item)
     }
 }
 
+QStringList AutoPriceDialog::ListWidgetToStringList(const QListWidget *widget)
+{
+    QStringList tmp;
+    for (auto row = 0; row < widget->count(); row++) {
+        tmp.push_back(widget->item(row)->text());
+    }
+    return tmp;
+}
+
 int AutoPriceDialog::ErrorCount() const
 {
     int error_count{0};
-    if (!active_expression_.isValid()) { ++error_count; }
-    qDebug() << error_count;
+    if (!active_expression_.isValid()) { ++error_count; };
     error_count += ListWidgetErrorCount(ui->listWidget_match);
-        qDebug() << error_count;
-
     error_count += ListWidgetErrorCount(ui->listWidget_mismatch);
-        qDebug() << error_count;
     return error_count;
 }
 
@@ -110,8 +114,8 @@ void AutoPriceDialog::OnIndexChanged(const QModelIndex &index)
 
 void AutoPriceDialog::on_AutoPriceDialog_accepted()
 {
-    model_->itemFromIndex(model_->index(current_row_,1))->setData(Utils::items(ui->listWidget_match));
-    model_->itemFromIndex(model_->index(current_row_,2))->setData(Utils::items(ui->listWidget_mismatch));
+    model_->itemFromIndex(model_->index(current_row_,1))->setData(ListWidgetToStringList(ui->listWidget_match));
+    model_->itemFromIndex(model_->index(current_row_,2))->setData(ListWidgetToStringList(ui->listWidget_mismatch));
     mapper_->submit();
 }
 

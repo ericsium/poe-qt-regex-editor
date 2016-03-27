@@ -18,8 +18,7 @@ SOURCES += main.cpp\
     autopricemanager.cpp \
     autoprice.cpp \
     autopricedialog.cpp \
-    autopriceitemmodel.cpp \
-    autopriceutils.cpp
+    autopriceitemmodel.cpp
 
 HEADERS  += mainwindow.h \
     autopricemanagerdialog.h \
@@ -27,8 +26,7 @@ HEADERS  += mainwindow.h \
     serialize.h \
     autoprice.h \
     autopricedialog.h \
-    autopriceitemmodel.h \
-    autopriceutils.h
+    autopriceitemmodel.h
 
 FORMS    += mainwindow.ui \
     autopricemanagerdialog.ui \
