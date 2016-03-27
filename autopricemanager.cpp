@@ -93,8 +93,8 @@ void AutoPriceManager::ReadFromModel()
             QStandardItem *item = model_->item(row, column);
             switch(column) {
             case 0: tmp.expression_.setPattern(item->text()); break;
-            case 1: tmp.matches = item->data(Qt::UserRole).toStringList(); break;
-            case 2: tmp.mismatches = item->data(Qt::UserRole).toStringList(); break;
+            case 1: tmp.matches = item->data().toStringList(); break;
+            case 2: tmp.mismatches = item->data().toStringList(); break;
             }
         }
         auto_price_list_.append(std::move(tmp));
@@ -115,11 +115,11 @@ void AutoPriceManager::WriteToModel()
         model_->setItem(index,0,item);
 
         item = new QStandardItem;
-        item->setData(ap.matches, Qt::UserRole);
+        item->setData(ap.matches);
         model_->setItem(index,1,item);
 
         item = new QStandardItem;
-        item->setData(ap.mismatches, Qt::UserRole);
+        item->setData(ap.mismatches);
         model_->setItem(index,2,item);
         index++;
     }

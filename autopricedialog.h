@@ -39,6 +39,9 @@ private:
     void UpdateListWidgetErrorState(QListWidget *widget);
     void UpdateListWidgetItemErrorState(QListWidgetItem *item);
 
+    int ErrorCount() const;
+    int ListWidgetErrorCount(QListWidget *widget) const;
+
 public Q_SLOTS:
     void OnIndexChanged(const QModelIndex &index);
 private slots:
@@ -49,6 +52,8 @@ private slots:
     void on_toolButton_mismatch_remove_clicked();
     void on_toolButton_mismatch_add_clicked();
     void on_listWidget_match_itemChanged(QListWidgetItem *item);
+    void on_listWidget_mismatch_itemChanged(QListWidgetItem *item);
+    void on_buttonBox_accepted();
 };
 
 #endif // AUTOPRICEDIALOG_H

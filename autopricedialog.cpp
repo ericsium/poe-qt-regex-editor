@@ -5,6 +5,7 @@
 #include <QDataWidgetMapper>
 #include <QDebug>
 #include <QPushButton>
+#include <QMessageBox>
 
 AutoPriceDialog::AutoPriceDialog(QWidget *parent, AutoPriceItemModel *model) :
     QDialog(parent),
@@ -34,7 +35,6 @@ AutoPriceDialog::~AutoPriceDialog()
 void AutoPriceDialog::SetActiveExpression(QString str)
 {
     active_expression_.setPattern(str);
-
 }
 
 void AutoPriceDialog::AddStringToListWidget(QString str, QListWidget *widget)
@@ -49,7 +49,7 @@ void AutoPriceDialog::AddStringToListWidget(QString str, QListWidget *widget)
 void AutoPriceDialog::LoadListWidgetFromRowColumn(QListWidget *widget, int row, int column)
 {
     widget->clear();
-    for (auto const &str: model_->item(row, column)->data(Qt::UserRole).toStringList()) {
+    for (auto const &str: model_->item(row, column)->data().toStringList()) {
         AddStringToListWidget(str, widget);
     }
 }
@@ -70,11 +70,32 @@ void AutoPriceDialog::UpdateListWidgetItemErrorState(QListWidgetItem *item)
     // See if item matches
     if (item->listWidget()->property("match").toBool()) {
         item->setForeground(match.hasMatch() ? Qt::black : Qt::red);
-            qDebug() << "Here I am match:" << ui->lineEdit->text() << " " << match.isValid() << " " << item->text();
     } else {
         item->setForeground(match.hasMatch() ? Qt::red : Qt::black);
-            qDebug() << "Here I am mismatch:" << ui->lineEdit->text() << " "<< match.isValid() << " " << item->text();
     }
+}
+
+int AutoPriceDialog::ErrorCount() const
+{
+    int error_count{0};
+    if (!active_expression_.isValid()) { ++error_count; }
+    qDebug() << error_count;
+    error_count += ListWidgetErrorCount(ui->listWidget_match);
+        qDebug() << error_count;
+
+    error_count += ListWidgetErrorCount(ui->listWidget_mismatch);
+        qDebug() << error_count;
+    return error_count;
+}
+
+int AutoPriceDialog::ListWidgetErrorCount(QListWidget *widget) const
+{
+    int error_count{0};
+    for(int i = 0; i < widget->count(); ++i) {
+        QListWidgetItem *item = widget->item(i);
+        if (item->foreground() == Qt::red) {++error_count;}
+    }
+    return error_count;
 }
 
 void AutoPriceDialog::OnIndexChanged(const QModelIndex &index)
@@ -89,8 +110,8 @@ void AutoPriceDialog::OnIndexChanged(const QModelIndex &index)
 
 void AutoPriceDialog::on_AutoPriceDialog_accepted()
 {
-    model_->itemFromIndex(model_->index(current_row_,1))->setData(Utils::items(ui->listWidget_match), Qt::UserRole);
-    model_->itemFromIndex(model_->index(current_row_,2))->setData(Utils::items(ui->listWidget_mismatch), Qt::UserRole);
+    model_->itemFromIndex(model_->index(current_row_,1))->setData(Utils::items(ui->listWidget_match));
+    model_->itemFromIndex(model_->index(current_row_,2))->setData(Utils::items(ui->listWidget_mismatch));
     mapper_->submit();
 }
 
@@ -99,15 +120,12 @@ void AutoPriceDialog::on_lineEdit_textChanged(const QString &arg1)
     SetActiveExpression(arg1);
 
     // Basically constantly evaluate regexp for validity
-    QRegularExpression exp(arg1);
-    if (!exp.isValid()) {
+    if (!active_expression_.isValid()) {
         ui->lineEdit->setPalette(error_palette_);
         ui->doubleSpinBox->setEnabled(false);
-        ui->buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
     } else {
         ui->lineEdit->setPalette(normal_palette_);
-        ui->doubleSpinBox->setEnabled(exp.captureCount() == 0);
-        ui->buttonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
+        ui->doubleSpinBox->setEnabled(active_expression_.captureCount() == 0);
     }
     UpdateListWidgetErrorState(ui->listWidget_match);
     UpdateListWidgetErrorState(ui->listWidget_mismatch);
@@ -136,4 +154,18 @@ void AutoPriceDialog::on_toolButton_mismatch_add_clicked()
 void AutoPriceDialog::on_listWidget_match_itemChanged(QListWidgetItem *item)
 {
     UpdateListWidgetItemErrorState(item);
+}
+
+void AutoPriceDialog::on_listWidget_mismatch_itemChanged(QListWidgetItem *item)
+{
+    UpdateListWidgetItemErrorState(item);
+}
+
+void AutoPriceDialog::on_buttonBox_accepted()
+{
+    if (ErrorCount() == 0 ) {
+        accept();
+    } else {
+        QMessageBox::warning(this, "Error", QString("You have ") + QString::number(ErrorCount()) + " active errors (in red) that you must fix before submitting.");
+    }
 }
