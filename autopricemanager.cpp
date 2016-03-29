@@ -87,6 +87,7 @@ void AutoPriceManager::ReadFromModel()
     qDebug() << "ReadFromModel()";
     auto_price_list_.clear();
 
+    /*
     for (auto row = 0; row < model_->rowCount(); row++) {
         AutoPrice tmp;
         for (auto column = 0; column < model_->columnCount(); column++) {
@@ -99,11 +100,13 @@ void AutoPriceManager::ReadFromModel()
         }
         auto_price_list_.append(std::move(tmp));
     }
+    */
 }
 
 void AutoPriceManager::WriteToModel()
 {
     qDebug() << "WriteToModel()";
+    /*
     model_->clear();
     model_->setRowCount(auto_price_list_.size());
     model_->setColumnCount(3);
@@ -123,6 +126,7 @@ void AutoPriceManager::WriteToModel()
         model_->setItem(index,2,item);
         index++;
     }
+    */
 }
 
 QDataStream &operator<<(QDataStream &out, const AutoPriceManager &s)

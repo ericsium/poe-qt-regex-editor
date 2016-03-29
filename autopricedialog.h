@@ -35,7 +35,7 @@ private:
 
     void SetActiveExpression(QString str);
     void AddStringToListWidget(QString str, QListWidget *widget);
-    void LoadListWidgetFromRowColumn(QListWidget *widget, int row, int column);
+    void LoadListWidgetFromIndex(QListWidget *widget, QModelIndex index);
     void UpdateListWidgetErrorState(QListWidget *widget);
     void UpdateListWidgetItemErrorState(QListWidgetItem *item);
     QStringList ListWidgetToStringList(const QListWidget *widget);

@@ -7,11 +7,13 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow),
-    model_(new AutoPriceItemModel()),
-    apm_dialog_(new AutoPriceManagerDialog(this, model_))
+    ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    model_ = new AutoPriceItemModel(this, "testfile");
+    apm_dialog_ = new AutoPriceManagerDialog(this, model_);
+
     apm_manager_ = new AutoPriceManager("testfile", model_);
 
     connect(apm_dialog_, &QDialog::accepted, [&]() {

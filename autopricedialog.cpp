@@ -14,7 +14,7 @@ AutoPriceDialog::AutoPriceDialog(QWidget *parent, AutoPriceItemModel *model) :
 {
     ui->setupUi(this);
     mapper_->setModel(model_);
-    mapper_->addMapping(ui->lineEdit, 0);
+    mapper_->addMapping(ui->lineEdit, model_->ColumnRegexp());
     mapper_->setSubmitPolicy(QDataWidgetMapper::ManualSubmit);
 
     ui->listWidget_match->setProperty("match", true);
@@ -45,10 +45,10 @@ void AutoPriceDialog::AddStringToListWidget(QString str, QListWidget *widget)
     UpdateListWidgetItemErrorState(item);
 }
 
-void AutoPriceDialog::LoadListWidgetFromRowColumn(QListWidget *widget, int row, int column)
+void AutoPriceDialog::LoadListWidgetFromIndex(QListWidget *widget, QModelIndex index)
 {
     widget->clear();
-    for (auto const &str: model_->item(row, column)->data().toStringList()) {
+    for (auto const &str: model_->data(index).toStringList()) {
         AddStringToListWidget(str, widget);
     }
 }
@@ -104,8 +104,8 @@ int AutoPriceDialog::ListWidgetErrorCount(QListWidget *widget) const
 
 void AutoPriceDialog::OnIndexChanged(const QModelIndex &index)
 {
-    LoadListWidgetFromRowColumn(ui->listWidget_match, index.row(), 1);
-    LoadListWidgetFromRowColumn(ui->listWidget_mismatch, index.row(), 2);
+    LoadListWidgetFromIndex(ui->listWidget_match, QModelIndex(index.row(), AutoPriceItemModel::Column::matches));
+    LoadListWidgetFromIndex(ui->listWidget_mismatch, QModelIndex(index.row(), AutoPriceItemModel::Column::mismatches));
 
     mapper_->setCurrentModelIndex(index);
     current_row_ = index.row();
